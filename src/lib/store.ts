@@ -72,7 +72,7 @@ export interface Lead {
   createdAt: string
 }
 
-const DEMO_PROPERTIES: Property[] = [
+export const DEMO_PROPERTIES: Property[] = [
   {
     id: "1",
     title: "Casa en Polanco",
@@ -484,7 +484,7 @@ const DEMO_PROPERTIES: Property[] = [
   },
 ]
 
-const DEMO_APPOINTMENTS: Appointment[] = [
+export const DEMO_APPOINTMENTS: Appointment[] = [
   {
     id: "a1",
     propertyId: "",
@@ -511,7 +511,7 @@ const DEMO_APPOINTMENTS: Appointment[] = [
   },
 ]
 
-const DEMO_LEADS: Lead[] = [
+export const DEMO_LEADS: Lead[] = [
   {
     id: "1",
     name: "Ana García",

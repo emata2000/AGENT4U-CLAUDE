@@ -1,6 +1,9 @@
 "use client"
-import { useState } from "react"
-import { useStore } from "@/lib/store"
+import { useState, useEffect } from "react"
+import { onAuthStateChanged } from "firebase/auth"
+import type { User } from "firebase/auth"
+import { auth } from "@/lib/firebase"
+import { useFirestoreStore, useFirestoreProfile } from "@/lib/firestore"
 import LoginScreen from "./screens/LoginScreen"
 import DashboardScreen from "./screens/DashboardScreen"
 import PropertiesScreen from "./screens/PropertiesScreen"
@@ -17,7 +20,6 @@ import AgentProfileScreen from "./screens/AgentProfileScreen"
 import BottomNav from "./BottomNav"
 import { Building2, Camera, Users, MapPin } from "lucide-react"
 import type { Property, Lead, Appointment } from "@/lib/store"
-import { useAgentProfile } from "@/lib/store"
 
 export type Screen =
   | "login"
@@ -42,7 +44,8 @@ export interface NewPropertyPrefill {
 }
 
 export default function App() {
-  const [loggedIn, setLoggedIn] = useState(false)
+  // undefined = still checking auth, null = not logged in, User = logged in
+  const [user, setUser] = useState<User | null | undefined>(undefined)
   const [screen, setScreen] = useState<Screen>("dashboard")
   const [activeTab, setActiveTab] = useState<"dashboard" | "properties" | "leads" | "pending">("dashboard")
   const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null)
@@ -51,8 +54,15 @@ export default function App() {
   const [showAddSheet, setShowAddSheet] = useState(false)
   const [newPropertyPrefill, setNewPropertyPrefill] = useState<NewPropertyPrefill | null>(null)
   const [tourInitialSelected, setTourInitialSelected] = useState<string[]>([])
-  const store = useStore()
-  const { profile: agentProfile, saveProfile } = useAgentProfile()
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (u) => setUser(u))
+    return unsub
+  }, [])
+
+  const uid = user?.uid ?? null
+  const store = useFirestoreStore(uid)
+  const { profile: agentProfile, saveProfile } = useFirestoreProfile(uid, user?.displayName, user?.email)
 
   const goTo = (s: Screen, id?: string) => {
     setScreen(s)
@@ -64,8 +74,22 @@ export default function App() {
     }
   }
 
-  if (!loggedIn) {
-    return <LoginScreen onLogin={() => setLoggedIn(true)} />
+  // Still checking auth state — show spinner
+  if (user === undefined) {
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh", background: "white" }}>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ width: 48, height: 48, border: "4px solid #e2e8f0", borderTopColor: "#2563eb", borderRadius: "50%", animation: "spin 0.8s linear infinite", margin: "0 auto 16px" }} />
+          <p style={{ color: "#6b7280", fontSize: 14 }}>Cargando...</p>
+        </div>
+        <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
+      </div>
+    )
+  }
+
+  // Not logged in — show login screen
+  if (!user) {
+    return <LoginScreen />
   }
 
   const selectedProperty = store.properties.find(p => p.id === selectedPropertyId) ?? null
