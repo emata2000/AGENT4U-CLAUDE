@@ -12,12 +12,18 @@ const col = (uid: string, name: string) => collection(db, "agents", uid, name)
 const ref = (uid: string, name: string, id: string) => doc(db, "agents", uid, name, id)
 const profileRef = (uid: string) => doc(db, "agents", uid, "profile", "data")
 
+// ─── Remove undefined values (Firestore rejects them) ────────────────────────
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function clean<T>(obj: T): T {
+  return JSON.parse(JSON.stringify(obj))
+}
+
 // ─── Seed demo data on first login ───────────────────────────────────────────
 async function seedDemoData(uid: string) {
   const batch = writeBatch(db)
-  DEMO_PROPERTIES.forEach(p => batch.set(ref(uid, "properties", p.id), p))
-  DEMO_LEADS.forEach(l => batch.set(ref(uid, "leads", l.id), l))
-  DEMO_APPOINTMENTS.forEach(a => batch.set(ref(uid, "appointments", a.id), a))
+  DEMO_PROPERTIES.forEach(p => batch.set(ref(uid, "properties", p.id), clean(p)))
+  DEMO_LEADS.forEach(l => batch.set(ref(uid, "leads", l.id), clean(l)))
+  DEMO_APPOINTMENTS.forEach(a => batch.set(ref(uid, "appointments", a.id), clean(a)))
   await batch.commit()
 }
 
@@ -57,32 +63,32 @@ export function useFirestoreStore(uid: string | null) {
 
   const addProperty = useCallback(async (p: Property) => {
     if (!uid) return
-    await setDoc(ref(uid, "properties", p.id), p)
+    await setDoc(ref(uid, "properties", p.id), clean(p))
   }, [uid])
 
   const updateProperty = useCallback(async (p: Property) => {
     if (!uid) return
-    await setDoc(ref(uid, "properties", p.id), p)
+    await setDoc(ref(uid, "properties", p.id), clean(p))
   }, [uid])
 
   const addLead = useCallback(async (l: Lead) => {
     if (!uid) return
-    await setDoc(ref(uid, "leads", l.id), l)
+    await setDoc(ref(uid, "leads", l.id), clean(l))
   }, [uid])
 
   const updateLead = useCallback(async (l: Lead) => {
     if (!uid) return
-    await setDoc(ref(uid, "leads", l.id), l)
+    await setDoc(ref(uid, "leads", l.id), clean(l))
   }, [uid])
 
   const addAppointment = useCallback(async (a: Appointment) => {
     if (!uid) return
-    await setDoc(ref(uid, "appointments", a.id), a)
+    await setDoc(ref(uid, "appointments", a.id), clean(a))
   }, [uid])
 
   const updateAppointment = useCallback(async (a: Appointment) => {
     if (!uid) return
-    await setDoc(ref(uid, "appointments", a.id), a)
+    await setDoc(ref(uid, "appointments", a.id), clean(a))
   }, [uid])
 
   return {
@@ -131,7 +137,7 @@ export function useFirestoreProfile(uid: string | null, googleDisplayName?: stri
   const saveProfile = useCallback(async (p: AgentProfile) => {
     if (!uid) return
     setProfile(p)
-    await setDoc(profileRef(uid), p)
+    await setDoc(profileRef(uid), clean(p))
   }, [uid])
 
   return { profile, saveProfile }
