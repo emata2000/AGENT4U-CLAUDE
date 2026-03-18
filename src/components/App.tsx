@@ -1,6 +1,6 @@
 "use client"
 import { useState, useEffect } from "react"
-import { onAuthStateChanged } from "firebase/auth"
+import { onAuthStateChanged, signOut } from "firebase/auth"
 import type { User } from "firebase/auth"
 import { auth } from "@/lib/firebase"
 import { useFirestoreStore, useFirestoreProfile } from "@/lib/firestore"
@@ -173,6 +173,7 @@ export default function App() {
           profile={agentProfile}
           onSave={saveProfile}
           onBack={() => goTo("dashboard")}
+          onLogout={() => signOut(auth)}
         />
       )}
       {screen === "leads" && (

@@ -1,15 +1,16 @@
 "use client"
 import { useState, useRef } from "react"
-import { ArrowLeft, Camera, User } from "lucide-react"
+import { ArrowLeft, Camera, User, LogOut } from "lucide-react"
 import type { AgentProfile } from "@/lib/store"
 
 interface Props {
   profile: AgentProfile
   onSave: (p: AgentProfile) => void
   onBack: () => void
+  onLogout: () => void
 }
 
-export default function AgentProfileScreen({ profile, onSave, onBack }: Props) {
+export default function AgentProfileScreen({ profile, onSave, onBack, onLogout }: Props) {
   const [form, setForm] = useState<AgentProfile>({ ...profile })
   const [saved, setSaved] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
@@ -156,6 +157,22 @@ export default function AgentProfileScreen({ profile, onSave, onBack }: Props) {
         }}>
           📄 Tu foto, nombre, teléfono y correo aparecerán en los brochures de tus propiedades.
         </div>
+
+        {/* Logout */}
+        <button
+          onClick={onLogout}
+          style={{
+            marginTop: 24, width: "100%",
+            display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+            padding: "13px 20px",
+            background: "white", border: "1.5px solid #fee2e2",
+            borderRadius: 14, cursor: "pointer",
+            fontSize: 15, fontWeight: 600, color: "#dc2626",
+          }}
+        >
+          <LogOut size={17} />
+          Cerrar sesión
+        </button>
       </div>
     </div>
   )
