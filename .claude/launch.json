@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Agent4U MVP",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "/Users/eduardomata/Library/CloudStorage/OneDrive-Personal/00 Personales/claude/Agent4U/mvp",
+      "port": 3000
+    }
+  ]
+}
