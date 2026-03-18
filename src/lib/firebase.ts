@@ -1,5 +1,5 @@
 import { initializeApp, getApps } from "firebase/app"
-import { initializeFirestore, persistentLocalCache, getFirestore } from "firebase/firestore"
+import { getFirestore } from "firebase/firestore"
 import { getAuth, GoogleAuthProvider } from "firebase/auth"
 
 const firebaseConfig = {
@@ -14,17 +14,6 @@ const firebaseConfig = {
 
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0]
 
-// Use persistent (IndexedDB) cache for offline support — Firebase v10+ API
-// Falls back to getFirestore if already initialized (hot-reload safe)
-function initDb() {
-  if (typeof window === "undefined") return getFirestore(app)
-  try {
-    return initializeFirestore(app, { localCache: persistentLocalCache() })
-  } catch {
-    return getFirestore(app)
-  }
-}
-
-export const db = initDb()
+export const db = getFirestore(app)
 export const auth = getAuth(app)
 export const googleProvider = new GoogleAuthProvider()
