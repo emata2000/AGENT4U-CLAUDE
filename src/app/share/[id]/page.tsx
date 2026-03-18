@@ -4,7 +4,22 @@ import { useParams } from "next/navigation"
 import { getSharedProperty } from "@/lib/share"
 import type { Property } from "@/lib/store"
 import { formatPrice } from "@/lib/utils"
-import { MapPin, Bed, Bath, Ruler, Loader2 } from "lucide-react"
+import { MapPin, Bed, Bath, Ruler, Loader2, CheckCircle2, PlusCircle } from "lucide-react"
+
+const STORAGE_KEY = "agent4u_data"
+
+function importToMyApp(property: Property) {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    const data = raw ? JSON.parse(raw) : { properties: [], leads: [], appointments: [] }
+    const already = data.properties?.find((p: Property) => p.id === property.id)
+    if (already) return "already"
+    const newProp = { ...property, id: `imported_${Date.now()}`, active: true }
+    data.properties = [...(data.properties ?? []), newProp]
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+    return "ok"
+  } catch { return "error" }
+}
 
 export default function SharePage() {
   const params = useParams()
@@ -13,6 +28,7 @@ export default function SharePage() {
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
   const [photoIdx, setPhotoIdx] = useState(0)
+  const [importStatus, setImportStatus] = useState<"idle" | "ok" | "already" | "error">("idle")
 
   useEffect(() => {
     getSharedProperty(shareId).then(p => {
@@ -117,9 +133,39 @@ export default function SharePage() {
           </div>
         )}
 
-        {/* Contact info placeholder */}
-        <div style={{ padding: "14px 16px", background: "#f0fdf4", borderRadius: 14, marginTop: 8, textAlign: "center" }}>
-          <p style={{ fontSize: 13, color: "#16a34a", fontWeight: 600, margin: 0 }}>
+        {/* Import to my app */}
+        <div style={{ marginTop: 8 }}>
+          {importStatus === "idle" && (
+            <button onClick={() => setImportStatus(importToMyApp(property))} style={{
+              width: "100%", padding: "15px", borderRadius: 14,
+              background: "linear-gradient(135deg,#1e40af,#2563eb)", border: "none",
+              color: "white", fontSize: 15, fontWeight: 700, cursor: "pointer",
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+            }}>
+              <PlusCircle size={18} /> Agregar a mi cartera
+            </button>
+          )}
+          {importStatus === "ok" && (
+            <div style={{ padding: "15px", borderRadius: 14, background: "#f0fdf4", border: "1.5px solid #bbf7d0", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+              <CheckCircle2 size={18} color="#16a34a" />
+              <span style={{ fontSize: 14, fontWeight: 700, color: "#16a34a" }}>¡Inmueble agregado a tu cartera!</span>
+            </div>
+          )}
+          {importStatus === "already" && (
+            <div style={{ padding: "15px", borderRadius: 14, background: "#fffbeb", border: "1.5px solid #fde68a", textAlign: "center" }}>
+              <span style={{ fontSize: 14, fontWeight: 600, color: "#92400e" }}>Ya tienes este inmueble en tu cartera</span>
+            </div>
+          )}
+          {importStatus === "error" && (
+            <div style={{ padding: "15px", borderRadius: 14, background: "#fef2f2", border: "1.5px solid #fecaca", textAlign: "center" }}>
+              <span style={{ fontSize: 14, fontWeight: 600, color: "#991b1b" }}>Error al importar — intenta de nuevo</span>
+            </div>
+          )}
+        </div>
+
+        {/* Contact info */}
+        <div style={{ padding: "14px 16px", background: "#f8fafc", borderRadius: 14, marginTop: 10, textAlign: "center" }}>
+          <p style={{ fontSize: 13, color: "#6b7280", margin: 0 }}>
             📲 Contacta al agente para más información
           </p>
         </div>
