@@ -1,8 +1,9 @@
 "use client"
-import { useState, useRef } from "react"
+import { useState, useRef, useCallback } from "react"
 import { ArrowLeft, Share2, FileText, Bed, Bath, Ruler, MapPin, ChevronLeft, ChevronRight, Phone, Pencil, ImagePlus, Star } from "lucide-react"
 import type { Property, PropertyPhoto, AgentProfile } from "@/lib/store"
 import { formatPriceFull } from "@/lib/utils"
+import { shareProperty } from "@/lib/share"
 
 interface Props {
   property: Property
@@ -126,17 +127,21 @@ export default function PropertyDetailScreen({ property, agentProfile, onBack, o
     setShowStatusPicker(false)
   }
 
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: property.title,
-        text: `${property.title} - ${formatPriceFull(property.price)}`,
-        url: window.location.href,
-      })
-    } else {
-      alert("Link copiado: agent4u.app/propiedad/" + property.id)
+  const [shareLoading, setShareLoading] = useState(false)
+
+  const handleShare = useCallback(async () => {
+    setShareLoading(true)
+    try {
+      const link = await shareProperty(property)
+      const text = `🏠 *${property.title}*\n📍 ${property.address}, ${property.colony}\n💰 ${formatPriceFull(property.price)}\n\nVer detalles: ${link}`
+      const waUrl = `https://wa.me/?text=${encodeURIComponent(text)}`
+      window.open(waUrl, "_blank")
+    } catch {
+      alert("Error al generar link. Verifica tu conexión.")
+    } finally {
+      setShareLoading(false)
     }
-  }
+  }, [property])
 
   const handleGeneratePDF = () => {
     window.print()
@@ -170,11 +175,14 @@ export default function PropertyDetailScreen({ property, agentProfile, onBack, o
             }}>
               <Pencil size={20} color="white" />
             </button>
-            <button onClick={handleGeneratePDF} style={{
-              background: "rgba(0,0,0,0.45)", border: "none", borderRadius: 12,
-              padding: "8px 10px", cursor: "pointer",
+            <button onClick={handleShare} disabled={shareLoading} style={{
+              background: shareLoading ? "rgba(0,0,0,0.25)" : "rgba(0,0,0,0.45)", border: "none", borderRadius: 12,
+              padding: "8px 10px", cursor: shareLoading ? "default" : "pointer",
+              display: "flex", alignItems: "center", gap: 5,
             }}>
-              <Share2 size={20} color="white" />
+              {shareLoading
+                ? <span style={{ color: "white", fontSize: 11 }}>…</span>
+                : <Share2 size={20} color="white" />}
             </button>
             <button onClick={() => setShowBrochure(true)} style={{
               background: "#2563eb", border: "none", borderRadius: 12,
