@@ -103,7 +103,7 @@ export default function QuickCaptureScreen({ onSave, onBack }: Props) {
       {/* Header */}
       <div style={{
         padding: "52px 16px 16px",
-        background: "linear-gradient(135deg,#92400e,#d97706)",
+        background: "linear-gradient(135deg,#1e40af,#2563eb)",
         position: "sticky", top: 0, zIndex: 10,
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -128,14 +128,14 @@ export default function QuickCaptureScreen({ onSave, onBack }: Props) {
 
         {!photoUrl ? (
           <button onClick={() => fileRef.current?.click()} style={{
-            width: "100%", height: 160, border: "2px dashed #fcd34d",
-            borderRadius: 16, background: "#fffbeb", cursor: "pointer",
+            width: "100%", height: 160, border: "2px dashed #93c5fd",
+            borderRadius: 16, background: "#eff6ff", cursor: "pointer",
             display: "flex", flexDirection: "column", alignItems: "center",
             justifyContent: "center", gap: 8, marginBottom: 16,
           }}>
-            <Camera size={34} color="#d97706" />
-            <span style={{ fontSize: 15, fontWeight: 700, color: "#92400e" }}>Fotografiar el inmueble</span>
-            <span style={{ fontSize: 12, color: "#b45309" }}>El teléfono se leerá automáticamente del letrero</span>
+            <Camera size={34} color="#2563eb" />
+            <span style={{ fontSize: 15, fontWeight: 700, color: "#1e40af" }}>Fotografiar el inmueble</span>
+            <span style={{ fontSize: 12, color: "#2563eb" }}>El teléfono se leerá automáticamente del letrero</span>
           </button>
         ) : (
           <div style={{ position: "relative", marginBottom: 16, borderRadius: 16, overflow: "hidden" }}>
@@ -188,7 +188,7 @@ export default function QuickCaptureScreen({ onSave, onBack }: Props) {
           {ocrStatus === "no_phone" && (
             <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 7 }}>
               <AlertCircle size={12} color="#f59e0b" />
-              <span style={{ fontSize: 11, color: "#b45309" }}>
+              <span style={{ fontSize: 11, color: "#1d4ed8" }}>
                 No se detectó número en la foto — ingrésalo manualmente
               </span>
             </div>
@@ -202,7 +202,7 @@ export default function QuickCaptureScreen({ onSave, onBack }: Props) {
             {([
               { key: "llamada", label: "📞 Llamada", color: "#2563eb", bg: "#dbeafe" },
               { key: "recorrido", label: "🗺 Recorrido", color: "#6d28d9", bg: "#ede9fe" },
-              { key: "reunion", label: "🤝 Reunión", color: "#92400e", bg: "#fef3c7" },
+              { key: "reunion", label: "🤝 Reunión", color: "#1d4ed8", bg: "#dbeafe" },
             ] as const).map(op => (
               <button key={op.key} onClick={() => setType(op.key)} style={{
                 flex: 1, padding: "10px 4px", border: "1.5px solid",
@@ -288,7 +288,7 @@ export default function QuickCaptureScreen({ onSave, onBack }: Props) {
         </div>
 
         <button className="btn-primary" onClick={handleSave} disabled={!canSave} style={{
-          background: canSave ? "#d97706" : "#e2e8f0",
+          background: canSave ? "#2563eb" : "#e2e8f0",
           color: canSave ? "white" : "#94a3b8",
         }}>
           ✓ Guardar para llamar después

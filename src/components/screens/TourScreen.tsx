@@ -140,8 +140,13 @@ export default function TourScreen({ properties, onBack, initialSelected }: Prop
         <span style={{ background: "white", color: "#1e293b", fontSize: 9, fontWeight: 700, fontFamily: "monospace", padding: "2px 7px", borderRadius: 5, letterSpacing: 0.5, pointerEvents: "none", boxShadow: "0 1px 5px rgba(0,0,0,0.3)", border: "1px solid rgba(0,0,0,0.1)" }}>F11</span>
       </div>
       <div style={{ padding: "52px 16px 14px", background: "white", borderBottom: "1px solid #f1f5f9" }}>
-        <h1 style={{ fontSize: 20, fontWeight: 700, margin: "0 0 4px" }}>Planear recorrido</h1>
-        <p style={{ fontSize: 13, color: "#6b7280", margin: 0 }}>Selecciona los inmuebles a visitar</p>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
+          <button onClick={onBack} style={{ background: "#f1f5f9", border: "none", borderRadius: 10, padding: "7px 9px", cursor: "pointer", display: "flex", alignItems: "center" }}>
+            <ArrowLeft size={18} color="#374151" />
+          </button>
+          <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0 }}>Planear recorrido</h1>
+        </div>
+        <p style={{ fontSize: 13, color: "#6b7280", margin: 0, paddingLeft: 46 }}>Selecciona los inmuebles a visitar</p>
       </div>
 
       <div style={{ padding: "12px 16px" }}>

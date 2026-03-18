@@ -13,9 +13,12 @@ interface Props {
 
 const STATUS_FILTERS = ["Activos", "Disponible", "Separada", "Vendida", "Inactivos"]
 
+const PAGE_SIZE = 10
+
 export default function PropertiesScreen({ properties, goTo, onSelect }: Props) {
   const [search, setSearch] = useState("")
   const [filter, setFilter] = useState("Activos")
+  const [visible, setVisible] = useState(PAGE_SIZE)
 
   const filtered = properties.filter(p => {
     const isActive = p.active !== false
@@ -29,6 +32,8 @@ export default function PropertiesScreen({ properties, goTo, onSelect }: Props) 
       (filter === "Vendida" && p.status === "vendida" && isActive)
     return matchSearch && matchFilter
   })
+
+  const visibleItems = filtered.slice(0, visible)
 
   return (
     <div className="screen">
@@ -61,14 +66,14 @@ export default function PropertiesScreen({ properties, goTo, onSelect }: Props) 
             style={{ paddingLeft: 40 }}
             placeholder="Buscar por nombre o colonia..."
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={e => { setSearch(e.target.value); setVisible(PAGE_SIZE) }}
           />
         </div>
 
         {/* Filter chips */}
         <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 4 }}>
           {STATUS_FILTERS.map(f => (
-            <button key={f} onClick={() => setFilter(f)} style={{
+            <button key={f} onClick={() => { setFilter(f); setVisible(PAGE_SIZE) }} style={{
               whiteSpace: "nowrap",
               padding: "6px 14px",
               borderRadius: 999,
@@ -93,7 +98,7 @@ export default function PropertiesScreen({ properties, goTo, onSelect }: Props) 
           </div>
         )}
 
-        {filtered.map(p => (
+        {visibleItems.map(p => (
           <button key={p.id} onClick={() => onSelect(p.id)}
             style={{
               width: "100%", textAlign: "left", background: "white",
@@ -159,6 +164,19 @@ export default function PropertiesScreen({ properties, goTo, onSelect }: Props) 
             </div>
           </button>
         ))}
+        {visible < filtered.length && (
+          <button
+            onClick={() => setVisible(v => v + PAGE_SIZE)}
+            style={{
+              width: "100%", padding: "13px", borderRadius: 12,
+              border: "1.5px solid #e2e8f0", background: "white",
+              color: "#2563eb", fontSize: 14, fontWeight: 600, cursor: "pointer",
+              marginBottom: 12,
+            }}
+          >
+            Ver más ({filtered.length - visible} restantes)
+          </button>
+        )}
       </div>
     </div>
   )

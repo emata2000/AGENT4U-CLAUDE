@@ -12,9 +12,12 @@ interface Props {
   onSelect: (id: string) => void
 }
 
+const PAGE_SIZE = 10
+
 export default function LeadsScreen({ leads, properties, goTo, onSelect }: Props) {
   const [search, setSearch] = useState("")
   const [showInactive, setShowInactive] = useState(false)
+  const [visible, setVisible] = useState(PAGE_SIZE)
 
   const filtered = leads.filter(l => {
     const isActive = !l.status || l.status === "activo"
@@ -24,6 +27,8 @@ export default function LeadsScreen({ leads, properties, goTo, onSelect }: Props
       l.lookingFor.toLowerCase().includes(search.toLowerCase())
     )
   })
+
+  const visibleItems = filtered.slice(0, visible)
 
   return (
     <div className="screen">
@@ -51,7 +56,7 @@ export default function LeadsScreen({ leads, properties, goTo, onSelect }: Props
           <div style={{ position: "relative", flex: 1 }}>
             <Search size={16} color="#9ca3af" style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)" }} />
             <input className="input-field" style={{ paddingLeft: 40 }} placeholder="Buscar lead..."
-              value={search} onChange={e => setSearch(e.target.value)} />
+              value={search} onChange={e => { setSearch(e.target.value); setVisible(PAGE_SIZE) }} />
           </div>
           <button onClick={() => setShowInactive(!showInactive)} style={{
             padding: "10px 12px", borderRadius: 12, border: "1.5px solid",
@@ -76,7 +81,7 @@ export default function LeadsScreen({ leads, properties, goTo, onSelect }: Props
           </div>
         )}
 
-        {filtered.map(lead => {
+        {visibleItems.map(lead => {
           const ratings = lead.propertyRatings ?? {}
           const assignedProps = properties
             .filter(p => lead.assignedProperties.includes(p.id))
@@ -175,6 +180,19 @@ export default function LeadsScreen({ leads, properties, goTo, onSelect }: Props
             </div>
           )
         })}
+        {visible < filtered.length && (
+          <button
+            onClick={() => setVisible(v => v + PAGE_SIZE)}
+            style={{
+              width: "100%", padding: "13px", borderRadius: 12,
+              border: "1.5px solid #e2e8f0", background: "white",
+              color: "#2563eb", fontSize: 14, fontWeight: 600, cursor: "pointer",
+              marginBottom: 12,
+            }}
+          >
+            Ver más ({filtered.length - visible} restantes)
+          </button>
+        )}
       </div>
     </div>
   )

@@ -220,7 +220,7 @@ export default function App() {
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               <button onClick={() => { setShowAddSheet(false); goTo("quick-capture") }} style={{
                 display: "flex", alignItems: "center", gap: 14, padding: "16px 18px",
-                background: "linear-gradient(135deg,#92400e,#d97706)", border: "none", borderRadius: 16, cursor: "pointer", textAlign: "left",
+                background: "linear-gradient(135deg,#1e40af,#2563eb)", border: "none", borderRadius: 16, cursor: "pointer", textAlign: "left",
               }}>
                 <div style={{ width: 44, height: 44, background: "rgba(255,255,255,0.2)", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   <Camera size={22} color="white" />
