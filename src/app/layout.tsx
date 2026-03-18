@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Agent4U — CRM Inmobiliario",
+  title: "Agent4U",
   description: "Tu asistente inmobiliario en campo",
   manifest: "/manifest.json",
 };

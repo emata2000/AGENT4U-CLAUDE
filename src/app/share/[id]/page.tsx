@@ -171,7 +171,7 @@ export default function SharePage() {
         </div>
 
         <p style={{ fontSize: 11, color: "#9ca3af", textAlign: "center", marginTop: 24 }}>
-          Compartido con Agent4U · CRM Inmobiliario
+          Compartido con Agent4U
         </p>
       </div>
     </div>
