@@ -4,7 +4,7 @@ import { useParams } from "next/navigation"
 import { getSharedProperty } from "@/lib/share"
 import type { Property } from "@/lib/store"
 import { formatPrice } from "@/lib/utils"
-import { MapPin, Bed, Bath, Ruler, Phone, MessageCircle, Loader2 } from "lucide-react"
+import { MapPin, Bed, Bath, Ruler, Loader2 } from "lucide-react"
 
 export default function SharePage() {
   const params = useParams()
@@ -117,25 +117,12 @@ export default function SharePage() {
           </div>
         )}
 
-        {/* Contact buttons */}
-        {property.ownerPhone && (
-          <div style={{ display: "flex", gap: 10, marginTop: 8 }}>
-            <a href={`tel:${property.ownerPhone}`} style={{
-              flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-              padding: "14px", borderRadius: 14, background: "#f1f5f9", border: "1.5px solid #e2e8f0",
-              color: "#374151", textDecoration: "none", fontSize: 14, fontWeight: 700,
-            }}>
-              <Phone size={16} /> Llamar
-            </a>
-            <a href={`https://wa.me/${property.ownerPhone.replace(/\D/g, "")}`} target="_blank" rel="noreferrer" style={{
-              flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-              padding: "14px", borderRadius: 14, background: "#16a34a", border: "none",
-              color: "white", textDecoration: "none", fontSize: 14, fontWeight: 700,
-            }}>
-              <MessageCircle size={16} /> WhatsApp
-            </a>
-          </div>
-        )}
+        {/* Contact info placeholder */}
+        <div style={{ padding: "14px 16px", background: "#f0fdf4", borderRadius: 14, marginTop: 8, textAlign: "center" }}>
+          <p style={{ fontSize: 13, color: "#16a34a", fontWeight: 600, margin: 0 }}>
+            📲 Contacta al agente para más información
+          </p>
+        </div>
 
         <p style={{ fontSize: 11, color: "#9ca3af", textAlign: "center", marginTop: 24 }}>
           Compartido con Agent4U · CRM Inmobiliario
